@@ -6,6 +6,16 @@ A dual-purpose Java console application for text encryption/decryption and mathe
 
 This application provides two essential functionalities commonly used in programming assessments and practical scenarios. The Caesar Cipher component offers secure text transformation capabilities supporting multiple languages, while the Expression Evaluator provides robust mathematical computation with proper order of operations handling.
 
+## Compilation and Execution
+
+```bash
+# Compile
+javac MyProgram.java
+
+# Run
+java MyProgram
+```
+
 ### Practical Use Cases
 
 **Caesar Cipher Applications:**
