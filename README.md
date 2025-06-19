@@ -93,9 +93,8 @@ Input: "-5 + 3"
 Output: -2
 ```
 
-## Technical Requirements
+## Technical Features
 
-- **Language:** Java 8+
 - **Application Type:** Console-based interactive application
 - **Architecture:** Modular design with separate classes for each functionality
 - **Error Handling:** Comprehensive exception handling for invalid inputs
@@ -104,7 +103,6 @@ Output: -2
 ## Application Flow
 
 ```
-Welcome to Gehtsoft Technical Assessment
 Please choose an option:
 1. Caesar Cipher Encryption
 2. Caesar Cipher Decryption  
@@ -132,5 +130,3 @@ Continue? (y/n):
 - Comprehensive error messages
 - Edge case handling
 - Clean, readable, and maintainable code structure
-
-This application serves as both a practical utility and a demonstration of fundamental programming concepts including string manipulation, mathematical parsing, algorithm implementation, and user interface design.
