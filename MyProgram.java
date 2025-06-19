@@ -228,7 +228,7 @@ class CaesarCipher // class for encryption/decryption
 	{
 		System.out.print("Where the text? (console/file): ");
 		String type = scanner.nextLine();
-		String	input;
+		String	input = "";
 		if (type.equals("console"))
 		{
 			System.out.print("Enter text to " + operation + ": ");
@@ -245,14 +245,11 @@ class CaesarCipher // class for encryption/decryption
 			catch (IOException e)
 			{
 				System.out.println("Error reading file: " + e.getMessage());
-				return "";
+				System.exit(2);
 			}
 		}
 		else
-		{
-			System.out.println("Error: invalid input source.");
-			return "";
-		}
+			throw new IllegalArgumentException("Error: invalid input source.");
 		if (input == null || input.isBlank()) // if there is nothing to encrypt/decrypt
 			throw new IllegalArgumentException("Error: input text is empty.");
 		return (input);
@@ -426,8 +423,10 @@ public class MyProgram
 			int shift = -crypto.getShift(scanner); //Negative for decryption
 			System.out.println("Result: " + crypto.process(input, shift, null));
 		}
-		else
+		else if (is_shift_known == 'n' || is_shift_known == 'N')
 			System.out.println("Result:\n" + crypto.listAll(input)); // shift value is unknown, so let's print all the possible options
+		else
+			throw new IllegalArgumentException("Invalid option.");
 	}
 	
 	private static void CalculateMe(ExpressionEvaluator calculator, Scanner scanner)
