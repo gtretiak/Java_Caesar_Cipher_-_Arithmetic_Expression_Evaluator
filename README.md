@@ -130,3 +130,20 @@ Continue? (y/n):
 - Comprehensive error messages
 - Edge case handling
 - Clean, readable, and maintainable code structure
+
+## Assumptions
+
+1. **Alphabet Definitions**:
+   - Russian alphabet contains 33 characters (including Ёё), whereas English - 26
+   - This affects shift calculations and brute-force decryption
+
+2. **Numerical Handling**:
+   - Decimal numbers use '.' as decimal separator
+   - Numbers contain maximum one decimal point
+
+3. **Input Processing**:
+   - Mixed-language text will be processed with both alphabets recognized
+   - Empty inputs are rejected with clear error messages
+
+4. **Algorithmic Choices**:
+   - Brute-force decryption shows all possible shifts (with omiting non-target language for clarity)
