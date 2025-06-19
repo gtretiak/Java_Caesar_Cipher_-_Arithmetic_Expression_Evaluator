@@ -75,37 +75,31 @@ class ExpressionEvaluator // class for calculations
 	{
 		char	c = expr.charAt(i);
 		boolean	is_negative;
-
 		if (c == '-')
 			is_negative = true;
 		else
 			is_negative = false;
-		if (is_negative)
-		{
+		if (is_negative) {
 			if (tokens.isEmpty()
 				|| tokens.get(tokens.size() - 1).type == TokenType.operator
 				|| tokens.get(tokens.size() - 1).value.equals("("))
 			{} // we do nothing here, since it's a number
-			else // otherwise we append '-' which is most likely an operator
-			{
+			else {// otherwise we append '-' which is most likely an operator
 				tokens.add(new Token(TokenType.operator, "-"));
 				i++;
 				return (i); // we append the token and go to the next one
 			}
 		}
 		StringBuilder	num = new StringBuilder();
-		if (is_negative) // We start with '-' if it's a negative number
-		{
+		if (is_negative) {// We start with '-' if it's a negative number
 			num.append('-');
 			i++;
 		}
 		int	dots = 0;
 		while (i < expr.length()
 			&& (Character.isDigit(expr.charAt(i))
-			|| expr.charAt(i) == '.'))
-		{
-			if (expr.charAt(i) == '.')
-			{
+			|| expr.charAt(i) == '.')) {
+			if (expr.charAt(i) == '.') {
 				dots++;
 				if (dots > 1) // A number might have at max one dot
 					throw new RuntimeException("Too many dots");
@@ -182,21 +176,14 @@ class ExpressionEvaluator // class for calculations
 	private int get_presedence(String s) // for both top stack's value and current token's value
 					     // we determine the presedence depending on the operator
 	{
-		int res;
-
-		switch (s)
-		{
+		switch (s) {
 			case "+", "-":
-				res = 1;
-				break ;
+				return 1;
 			case "*", "/":
-				res = 2;
-				break ;
+				return 2;
 			default:
-				res = 0;
-				break ;
+				return 0;
 		}
-		return (res);
 	}
 
 	private double evaluate_postfix(List<Token> postfix)
@@ -206,8 +193,7 @@ class ExpressionEvaluator // class for calculations
 		{ // now we have only numbers and operators (no parentheses)
 			if (current.type == TokenType.number) // if it's a number, we push it in stack
 				stack.push(Double.parseDouble(current.value));// casting to double
-			else // which means it's an operator, so we assign numbers to compute:
-			{
+			else {// which means it's an operator, so we assign numbers to compute:
 				double right = stack.pop(); // we pick up them from the stack
 				double left = stack.pop();
 				switch (current.value) {
@@ -236,9 +222,9 @@ class ExpressionEvaluator // class for calculations
 	}
 }
 
-class CaesarCipher
+class CaesarCipher // class for encryption/decryption
 {
-	public String getInput(Scanner scanner, String operation)
+	public String getInput(Scanner scanner, String operation) // First we take the text, all the output is self-explanatory
 	{
 		System.out.print("Where the text? (console/file): ");
 		String type = scanner.nextLine();
@@ -254,7 +240,7 @@ class CaesarCipher
 			String path = scanner.nextLine();
 			try
 			{
-				input = Files.readString(Paths.get(path));
+				input = Files.readString(Paths.get(path));// we try to read from the file
 			}
 			catch (IOException e)
 			{
@@ -267,15 +253,14 @@ class CaesarCipher
 			System.out.println("Error: invalid input source.");
 			return "";
 		}
-		if (input == null || input.isBlank())
-		{
-			System.out.println("Error: input text is empty.");
-			System.exit(2);
-		}
+		if (input == null || input.isBlank()) // if there is nothing to encrypt/decrypt
+			throw new IllegalArgumentException("Error: input text is empty.");
+		return (input);
 	}
 	
-	public int getShift(Scanner scanner)
+	public int getShift(Scanner scanner) // Here we take a shift value (the workflow is also self-explanatory)
 	{
+		int	shift;
 		while (true)
 		{
 			System.out.print("Enter shift value: ");
@@ -287,57 +272,50 @@ class CaesarCipher
 			catch (InputMismatchException e)
 			{
 				System.out.println("Invalid input. Enter an integer for the shift.");
-				scanner.nextLine();
+				scanner.nextLine();//consuming the newline
 			}
 		}
 		return (shift);
 	}
 
-	public String process(String input, int shift, Boolean is_russian)
+	public String process(String text, int shift, Boolean is_russian) // the actual meat
 	{
-		final String upper = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+		final String upper = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"; // we need both strings to handle Russian, because Russian letters are not consecutive
 		final String lower = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
 		int	idx;
 		char	c;
-
 		StringBuilder	res = new StringBuilder();
-
-		for (int i = 0; i < text.length(); i++)
-		{
+		for (int i = 0; i < text.length(); i++) {
 			c = text.charAt(i);
-			idx = upper.indexOf(c);
-			if (idx != -1)
-			{
+			idx = upper.indexOf(c); // we get the index of the matching char OR -1
+			if (idx != -1) { // The char matches "upper" russian string
 				if (is_russian == null || is_russian)
 					res.append(upper.charAt((idx + shift + 33) % 33));
 				else
-					res.append('-');
+					res.append('-'); // we omit english characters
 				continue ;
 			}		
 			idx = lower.indexOf(c);
-			if (idx != -1)
-			{
+			if (idx != -1) { // The car matches "lower" russian string
 				if (is_russian == null || is_russian)
 					res.append(lower.charAt((idx + shift + 33) % 33));
 				else
-					res.append('-');
+					res.append('-'); // we omit english characters
 				continue ;
 			}
-			if (Character.isUpperCase(c) && c >= 'A' && c <= 'Z')
-			{
+			if (Character.isUpperCase(c) && c >= 'A' && c <= 'Z') {
 				if (is_russian == null || !is_russian)
 					res.append((char) ('A' + (c - 'A' + shift + 26) % 26));
 				else
-					res.append('-');
+					res.append('-'); // we omit russian characters
 			}
-			else if (Character.isLowerCase(c) && c >= 'a' && c <= 'z')
-			{
+			else if (Character.isLowerCase(c) && c >= 'a' && c <= 'z') {
 				if (is_russian == null || !is_russian)
 					res.append((char) ('a' + (c - 'a' + shift + 26) % 26));
 				else
-					res.append('-');
+					res.append('-'); // we omit russian characters
 			}
-			else
+			else // we append any other character as is
 				res.append(c);
 		}
 		return (res.toString());
@@ -346,79 +324,30 @@ class CaesarCipher
 	public String listAll(String text)
 	{
 		text = text.strip();
-		boolean	has_russian = text.matches(".*[А-Яа-яЁё].*");
-		boolean has_english = text.matches(".*[A-Za-z].*");
+		boolean	has_russian = text.matches(".*[А-Яа-яЁё].*"); // we know that the text has russian characters
+		boolean has_english = text.matches(".*[A-Za-z].*"); // we know that the text has english characters
 		StringBuilder	res = new StringBuilder();
 
 		if (has_russian)
 		{
 			res.append("\n=== Possible Russian Decryptions (32 shifts) ===\n"); 
-			for (int shift = 1; shift < 33; shift++)
+			for (int shift = 1; shift < 33; shift++) // Russian alphabet has 33 letters
 			{
-				String decrypted = ProcessStr(text, -shift, true);
+				String decrypted = process(text, -shift, true); // call "process" with "true"
 				res.append("Shift ").append(shift).append(": ").append(decrypted).append("\n");
 			}
 		}
 		if (has_english)
 		{
 			res.append("\n=== Possible English Decryptions (25 shifts) ===\n");
-			for (int shift = 1; shift < 26; shift++)
+			for (int shift = 1; shift < 26; shift++) // English alphabet has 26 letters
 			{
-				String decrypted = ProcessStr(text, -shift, false);
+				String decrypted = process(text, -shift, false); // call "process" with "false"
 				res.append("Shift ").append(shift).append(": ").append(decrypted).append("\n");
 			}
 		}
-		if (!has_russian && !has_english)
+		if (!has_russian && !has_english) // Nothing to decrypt
 			res.append(text).append("\n(No Russian or English letters detected)\n");
-		return (res.toString());
-	}
-
-	{
-		final String upper = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
-		final String lower = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
-		int	idx;
-		char	c;
-
-		StringBuilder	res = new StringBuilder();
-
-		for (int i = 0; i < text.length(); i++)
-		{
-			c = text.charAt(i);
-			idx = upper.indexOf(c);
-			if (idx != -1)
-			{
-				if (is_russian == null || is_russian)
-					res.append(upper.charAt((idx + shift + 33) % 33));
-				else
-					res.append('-');
-				continue ;
-			}		
-			idx = lower.indexOf(c);
-			if (idx != -1)
-			{
-				if (is_russian == null || is_russian)
-					res.append(lower.charAt((idx + shift + 33) % 33));
-				else
-					res.append('-');
-				continue ;
-			}
-			if (Character.isUpperCase(c) && c >= 'A' && c <= 'Z')
-			{
-				if (is_russian == null || !is_russian)
-					res.append((char) ('A' + (c - 'A' + shift + 26) % 26));
-				else
-					res.append('-');
-			}
-			else if (Character.isLowerCase(c) && c >= 'a' && c <= 'z')
-			{
-				if (is_russian == null || !is_russian)
-					res.append((char) ('a' + (c - 'a' + shift + 26) % 26));
-				else
-					res.append('-');
-			}
-			else
-				res.append(c);
-		}
 		return (res.toString());
 	}
 }
@@ -427,9 +356,9 @@ public class MyProgram
 {
 	public static void main(String[] args)
 	{
-		Scanner scanner = new Scanner(System.in);
-		ExpressionEvaluator calculator = new ExpressionEvaluator();
-		CaesarCipher crypto = new CaesarCipher();
+		Scanner scanner = new Scanner(System.in); // The tool to scan an user input
+		ExpressionEvaluator calculator = new ExpressionEvaluator();// building the object of the class ExprEval
+		CaesarCipher crypto = new CaesarCipher(); // building the object of the class CaesarCipher
 		char loop; 
 		int choice;
 
@@ -437,7 +366,7 @@ public class MyProgram
 		{
 			DisplayMenu();
 			choice = scanner.nextInt();
-			scanner.nextLine(); // consuming newline
+			scanner.nextLine(); // consuming newline after presssing "Enter"
 			switch (choice) {
 				case 1:
 					EncryptMe(crypto, scanner);
@@ -452,7 +381,7 @@ public class MyProgram
 					System.out.println("Exiting...");
 					return ;
 				default:
-					System.out.println("Invalid choice.");
+					System.out.println("Invalid choice."); // undefined option
 					break ;
 			}
 			System.out.print("Continue? (y/n): ");
@@ -480,14 +409,14 @@ public class MyProgram
 
 	private static void EncryptMe(CaesarCipher crypto, Scanner scanner)
 	{
-		String input = crypto.getInput(scanner, "encrypt");
-		int shift = crypto.getShift(scanner);
-		if (!input.endsWith("\n"))
+		String input = crypto.getInput(scanner, "encrypt"); // we run the method from the class with "code" string
+		int shift = crypto.getShift(scanner); // we run the method from the class
+		if (!input.endsWith("\n")) // for handling "console" option
 			input += "\n";
-		System.out.println("Result: " + crypto.process(input, shift, null));
+		System.out.println("Result: " + crypto.process(input, shift, null)); // we run the method from the class
 	}
 
-	private static void DecryptMe(CaesarCipher crypto, Scanner scanner)
+	private static void DecryptMe(CaesarCipher crypto, Scanner scanner) // Similar logic, except the shift value might be unknown
 	{
 		String input = crypto.getInput(scanner, "decrypt");
 		System.out.print("Is shift value known? (y/n): ");
@@ -498,7 +427,7 @@ public class MyProgram
 			System.out.println("Result: " + crypto.process(input, shift, null));
 		}
 		else
-			System.out.println("Result:\n" + crypto.listAll(input));
+			System.out.println("Result:\n" + crypto.listAll(input)); // shift value is unknown, so let's print all the possible options
 	}
 	
 	private static void CalculateMe(ExpressionEvaluator calculator, Scanner scanner)
@@ -509,7 +438,7 @@ public class MyProgram
 		{
 			System.out.println("Result: " + calculator.evaluate(expr));
 		}
-		catch (Exception e)
+		catch (Exception e) // exception handling if something is wrong
 		{
 			System.out.println("Error: " + e.getMessage());
 		}
